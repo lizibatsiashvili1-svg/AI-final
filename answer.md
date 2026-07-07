@@ -11,7 +11,7 @@ Original picture: `https://max.ge/ai2026/final/picture-template.jpeg`
 
 Tool used: ChatGPT (image editing).
 
-![](images/task1_result.jpg)
+![](task1_result.jpg)
 
 ---
 
@@ -27,7 +27,7 @@ Explored bot: `https://max.ge/ai2026/final/graph_bot_Lizi_Batsiashvili_454651016
 
 Full graph (10 nodes, 15 transitions, START = `JARO`, GOAL = `ORIN`):
 
-![](images/task3_graph.svg)
+![](task3_graph.svg)
 
 ---
 
