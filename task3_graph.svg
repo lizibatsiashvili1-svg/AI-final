@@ -1,0 +1,105 @@
+<svg viewBox="0 0 900 460" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#3a4148"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="460" fill="#ffffff"/>
+  <text x="450" y="28" text-anchor="middle" font-size="18" font-weight="700" fill="#23272b">Graph Navigator Bot — Full Graph (BFS Quiz Variant 04)</text>
+  <text x="450" y="48" text-anchor="middle" font-size="12" fill="#767068">START = JARO   •   GOAL = ORIN   •   arrowheads = directed edge, double arrowheads = bidirectional edge</text>
+
+  <!-- Edges (drawn before nodes so nodes sit on top) -->
+  <g stroke="#3a4148" stroke-width="2" fill="none">
+    <!-- JARO -> ALFA -->
+    <line x1="150" y1="271" x2="270" y2="149" marker-end="url(#arrow)"/>
+    <!-- JARO -> WRAIT -->
+    <line x1="150" y1="271" x2="270" y2="330" marker-end="url(#arrow)"/>
+    <!-- ALFA <> TARO (bidir) -->
+    <line x1="290" y1="149" x2="420" y2="110" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+    <!-- ALFA -> GLOOM -->
+    <line x1="290" y1="149" x2="420" y2="214" marker-end="url(#arrow)"/>
+    <!-- WRAIT -> GLOOM -->
+    <line x1="290" y1="330" x2="420" y2="224" marker-end="url(#arrow)"/>
+    <!-- WRAIT -- SOLAR (bidir, w2) -->
+    <line x1="290" y1="345" x2="420" y2="357" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+    <!-- TARO -> UMBRA -->
+    <line x1="450" y1="110" x2="580" y2="139" marker-end="url(#arrow)"/>
+    <!-- GLOOM -> UMBRA -->
+    <line x1="450" y1="214" x2="580" y2="149" marker-end="url(#arrow)"/>
+    <!-- GLOOM <> JOLT (bidir) -->
+    <line x1="450" y1="230" x2="580" y2="278" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+    <!-- SOLAR -> PAXA -->
+    <line x1="450" y1="357" x2="580" y2="398" marker-end="url(#arrow)"/>
+    <!-- UMBRA -> ORIN -->
+    <line x1="610" y1="139" x2="790" y2="241" marker-end="url(#arrow)"/>
+    <!-- JOLT -- ORIN (bidir, w1) -->
+    <line x1="610" y1="278" x2="790" y2="251" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+    <!-- PAXA -> ORIN (w3) -->
+    <line x1="610" y1="398" x2="790" y2="261" marker-end="url(#arrow)"/>
+    <!-- TARO -- GLOOM (bidir) -->
+    <line x1="435" y1="125" x2="435" y2="199" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+    <!-- UMBRA -- JOLT (bidir) -->
+    <line x1="595" y1="154" x2="595" y2="263" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+  </g>
+
+  <!-- Edge weight labels -->
+  <g font-size="11" fill="#0d7a63">
+    <text x="205" y="204">1</text>
+    <text x="205" y="315">1</text>
+    <text x="352" y="121">1</text>
+    <text x="352" y="175">1</text>
+    <text x="352" y="290">1</text>
+    <text x="352" y="360">2</text>
+    <text x="518" y="112">1</text>
+    <text x="518" y="175">1</text>
+    <text x="522" y="262">1</text>
+    <text x="518" y="390">1</text>
+    <text x="700" y="182">1</text>
+    <text x="700" y="256">1</text>
+    <text x="700" y="335">3</text>
+    <text x="443" y="165">1</text>
+    <text x="603" y="212">1</text>
+  </g>
+
+  <!-- Nodes -->
+  <g font-size="12" font-weight="700" text-anchor="middle">
+    <!-- JARO: START -->
+    <circle cx="150" cy="271" r="26" fill="#F97316" stroke="#0d7a63" stroke-width="4"/>
+    <text x="150" y="275" fill="#ffffff">JARO</text>
+    <text x="150" y="305" font-size="10" font-weight="400" fill="#0d7a63">START</text>
+
+    <circle cx="270" cy="149" r="26" fill="#FBBF24"/>
+    <text x="270" y="153" fill="#23272b">ALFA</text>
+
+    <circle cx="270" cy="330" r="26" fill="#34D399"/>
+    <text x="270" y="334" fill="#23272b">WRAIT</text>
+
+    <circle cx="435" cy="110" r="26" fill="#E879F9"/>
+    <text x="435" y="114" fill="#23272b">TARO</text>
+
+    <circle cx="435" cy="214" r="26" fill="#38BDF8"/>
+    <text x="435" y="218" fill="#23272b">GLOOM</text>
+
+    <circle cx="435" cy="357" r="26" fill="#22C55E"/>
+    <text x="435" y="361" fill="#23272b">SOLAR</text>
+
+    <circle cx="595" cy="139" r="26" fill="#EF4444"/>
+    <text x="595" y="143" fill="#ffffff">UMBRA</text>
+
+    <circle cx="595" cy="278" r="26" fill="#FB7185"/>
+    <text x="595" y="282" fill="#ffffff">JOLT</text>
+
+    <circle cx="595" cy="398" r="26" fill="#2DD4BF"/>
+    <text x="595" y="402" fill="#23272b">PAXA</text>
+
+    <!-- ORIN: GOAL -->
+    <circle cx="800" cy="251" r="26" fill="#A78BFA" stroke="#b8860b" stroke-width="4"/>
+    <text x="800" y="255" fill="#ffffff">ORIN</text>
+    <text x="800" y="285" font-size="10" font-weight="400" fill="#b8860b">GOAL</text>
+  </g>
+
+  <!-- Legend -->
+  <g font-size="11" fill="#767068">
+    <text x="20" y="440">Node fill colors match the bot's original palette. Numbers on edges = transition weight. Green ring = start node, gold ring = goal node.</text>
+  </g>
+</svg>
