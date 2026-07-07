@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GPA Calculator</title>
+<style>
+  :root{
+    --bg:#f4f6f8;
+    --panel:#ffffff;
+    --line:#dde3e8;
+    --ink:#1f2937;
+    --dim:#6b7280;
+    --accent:#0d7a63;
+    --accent-ink:#ffffff;
+    --pass:#16a34a;
+    --fail:#dc2626;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Segoe UI", Arial, sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    padding:28px 18px 60px;
+  }
+  .wrap{max-width:960px; margin:0 auto;}
+  h1{font-size:26px; margin:0 0 4px;}
+  .program{
+    font-size:16px;
+    color:var(--dim);
+    margin-bottom:22px;
+  }
+  .program b{color:var(--ink);}
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:20px;
+    margin-bottom:22px;
+    box-shadow:0 1px 3px rgba(0,0,0,0.04);
+  }
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:14px;
+  }
+  th, td{
+    text-align:left;
+    padding:9px 10px;
+    border-bottom:1px solid var(--line);
+  }
+  th{
+    background:#eef2f5;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:var(--dim);
+  }
+  tr:last-child td{border-bottom:none;}
+  .yes{color:var(--pass); font-weight:600;}
+  .no{color:var(--fail); font-weight:600;}
+  .added-row{background:#f7fbf9;}
+
+  .section-title{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:15px;
+    font-weight:700;
+    margin-bottom:10px;
+  }
+
+  .info-wrap{position:relative; display:inline-flex;}
+  .info-icon{
+    width:20px; height:20px;
+    border-radius:50%;
+    background:var(--accent);
+    color:#fff;
+    font-size:13px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    user-select:none;
+  }
+  .tooltip{
+    display:none;
+    position:absolute;
+    top:26px;
+    left:0;
+    z-index:20;
+    width:min(560px, 86vw);
+    max-height:420px;
+    overflow-y:auto;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:8px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.15);
+    padding:16px 18px;
+    font-size:13px;
+    line-height:1.55;
+  }
+  .info-wrap:hover .tooltip, .info-wrap.open .tooltip{ display:block; }
+  .tooltip h3{font-size:14px; margin:14px 0 6px;}
+  .tooltip h3:first-child{margin-top:0;}
+  .tooltip ol{padding-left:18px; margin:6px 0;}
+  .tooltip li{margin-bottom:6px;}
+  .tooltip table{font-size:11px; margin:10px 0;}
+  .tooltip th, .tooltip td{padding:4px 6px;}
+  .formula{
+    background:#f0f7f4;
+    border:1px solid #cfe8de;
+    border-radius:6px;
+    padding:8px 10px;
+    font-family:Consolas, monospace;
+    margin:8px 0;
+  }
+  .footnote{font-size:11px; color:var(--dim); margin-top:10px;}
+
+  .actions{display:flex; flex-wrap:wrap; gap:14px; margin-bottom:22px;}
+  .btn{
+    background:var(--accent);
+    color:var(--accent-ink);
+    border:none;
+    border-radius:8px;
+    padding:12px 20px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+  }
+  .btn.secondary{ background:#374151; }
+  .btn:hover{ filter:brightness(1.08); }
+  .desc{font-size:12px; color:var(--dim); max-width:320px;}
+  .action-block{display:flex; flex-direction:column; gap:6px;}
+
+  .result{
+    font-size:15px;
+    font-weight:700;
+    padding:12px 16px;
+    border-radius:8px;
+    background:#eef7f3;
+    border:1px solid #cfe8de;
+    color:var(--accent);
+    display:none;
+  }
+  .result.show{display:block;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>GPA Calculator</h1>
+  <div class="program">Academic Program: <b id="programName">PLACEHOLDER — Your Program Name Here</b></div>
+
+  <div class="panel">
+    <div class="section-title">Course List</div>
+    <table id="courseTable">
+      <thead>
+        <tr><th>Course</th><th>Credit</th><th>Grade</th><th>Passed</th></tr>
+      </thead>
+      <tbody id="courseBody"></tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <div class="section-title">
+      Grade Point Average (GPA)
+      <div class="info-wrap" id="infoWrap">
+        <div class="info-icon" id="infoIcon">i</div>
+        <div class="tooltip" id="tooltip">
+          <h3>SSIP Ilia State University — GPA Calculation Rule</h3>
+
+          <p><b>1.</b> At Ilia State University, GPA (Grade Point Average) represents the quotient of the sum of the products of (GP accumulated within each course) × (credits obtained for that course), divided by the sum of the credits of the courses completed by the student:</p>
+          <div class="formula">GPA = Σ (GP of each course × credits of each course) / Σ (credits of each course)</div>
+
+          <p><b>2.</b> GP (Grade Point) represents the grade received within one course, converted to a 4-point scale.</p>
+
+          <p><b>3.</b> According to the GP system, the grading scale is divided into the following categories:</p>
+          <ol type="none" style="padding-left:0;">
+            <li>F &nbsp;– 0–50 points (0 points, Fail)</li>
+            <li>E &nbsp;– 51–60 points</li>
+            <li>D &nbsp;– 61–70 points</li>
+            <li>C &nbsp;– 71–80 points</li>
+            <li>B &nbsp;– 81–90 points</li>
+            <li>A &nbsp;– 91–95 points</li>
+            <li>A+ – 96–100 points</li>
+          </ol>
+
+          <p><b>4.</b> Within each course: a grade in category E (51–60) is invariably equal to 1.00 GP; grades in categories D, C, B, A (61 to 95 points inclusive) increase evenly in increments of 1/12 (≈0.08) per point; a grade in category A+ (96 to 100 points inclusive) is invariant and equals 4.00 GP.</p>
+
+          <h3>Table 1. Conversion of Course Grades to the GP System</h3>
+          <table>
+            <tr><th>Mark</th><th>A+</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th></tr>
+            <tr><td>Score range</td><td>96–100</td><td>91–95</td><td>81–90</td><td>71–80</td><td>61–70</td><td>51–60</td><td>0–50</td></tr>
+            <tr><td>GP unit size</td><td>0.08</td><td>0.08</td><td>0.08</td><td>0.08</td><td>0.08</td><td>1.00</td><td>0.00</td></tr>
+            <tr><td>Cumulative GP</td><td>4.00</td><td>3.92</td><td>3.50</td><td>2.67</td><td>1.83</td><td>1.00</td><td>0.00</td></tr>
+          </table>
+
+          <p><b>5.</b> GPA is awarded within all academic programs at Ilia State University, except doctoral-level studies. GPA is also not awarded for certificate programs.</p>
+          <p><b>6.</b> Ilia State University issues only the final GPA, reflected in the diploma supplement. This does not apply to the one-tier Diplomated Physician (MD) program.</p>
+          <p><b>7.</b> When calculating the final GPA, fractions are rounded to the nearest tenth.</p>
+
+          <p class="footnote">Footnote: The frozen GP values within the E and A+ ranges reflect that differences between scores within these ranges are not considered significant — any score in 51–60 is equally low, and any score in 96–100 is equally outstanding.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <div class="action-block">
+        <button class="btn" id="calcBtn">Calculate</button>
+        <div class="desc">Calculates your GPA using the official ISU formula based on the courses currently shown above (excludes courses still in progress).</div>
+      </div>
+      <div class="action-block">
+        <button class="btn secondary" id="calcAiBtn">Calculate with Introduction to AI</button>
+        <div class="desc">Recalculates GPA assuming your "Introduction to AI" final score = current accumulated points + 30 final-exam points, instead of treating it as in-progress.</div>
+      </div>
+    </div>
+
+    <div class="result" id="calcResult"></div>
+    <div class="result" id="calcAiResult" style="margin-top:10px;"></div>
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   TRANSCRIPT DATA — REPLACE THIS WITH YOUR OWN ARGUS TRANSCRIPT
+   status: "completed" (passed, has final score) |
+           "failed"    (has final score, below 51) |
+           "progress"  (currently in progress, no final score yet)
+   score: numeric 0-100 (final score for completed/failed;
+          for "progress" courses this is your CURRENT ACCUMULATED
+          points so far, used only by the "Introduction to AI" button)
+   ============================================================ */
+const PROGRAM_NAME = "Civil Engineering (Major)";
+const INTRO_AI_COURSE_NAME = "Introduction to Artificial Intelligence (ENG)";
+
+const courses = [
+  // --- Fall 2022-2023 ---
+  { course: "Computer Graphics for the Built Environment (ENG)", credit: 6, score: 95, status: "completed" },
+  { course: "Construction and Culture (ENG)", credit: 2, score: 95, status: "completed" },
+  { course: "English Language Course C1-1 (ENG)", credit: 6, score: 91, status: "completed" },
+  { course: "Introduction to Civil Engineering (ENG)", credit: 2, score: 99, status: "completed" },
+  { course: "Introduction to General Chemistry (ENG)", credit: 8, score: 94, status: "completed" },
+  { course: "Introduction to Modern Thought I (ENG)", credit: 6, score: 81, status: "completed" },
+
+  // --- Spring 2022-2023 ---
+  { course: "Academic Techniques (ENG)", credit: 6, score: 81, status: "completed" },
+  { course: "Calculus I (ENG)", credit: 6, score: 91, status: "completed" },
+  { course: "English Language Course C1-2 (ENG)", credit: 6, score: 87, status: "completed" },
+  { course: "Introduction to Modern Thought II (ENG)", credit: 6, score: 91, status: "completed" },
+  { course: "Physics I including Lab (ENG)", credit: 8, score: 98, status: "completed" },
+
+  // --- Fall 2023-2024 ---
+  { course: "Applied Mechanics (Statics) (ENG)", credit: 6, score: 100, status: "completed" },
+  { course: "Basics of Physics II (ENG)", credit: 6, score: 84, status: "completed" },
+  { course: "Calculus II (ENG)", credit: 6, score: 61, status: "completed" },
+  { course: "Civil Engineering Computer Applications (GIS) (ENG)", credit: 6, score: 96, status: "completed" },
+  { course: "Ecology - ecosystem (ENG)", credit: 8, score: 95, status: "completed" },
+
+  // --- Spring 2023-2024 ---
+  { course: "Applied mechanics II (Dynamics) (ENG)", credit: 6, score: 91, status: "completed" },
+  { course: "Calculus III (ENG)", credit: 6, score: 92, status: "completed" },
+  { course: "Numerical Analysis (ENG)", credit: 6, score: 76, status: "completed" },
+  { course: "Probability and Statistics (ENG)", credit: 6, score: 54, status: "completed" },
+  { course: "Surveying for Civil Engineering and Construction (ENG)", credit: 6, score: 91, status: "completed" },
+
+  // --- Fall 2024-2025 ---
+  { course: "Biology for Engineers (ENG)", credit: 6, score: 73, status: "completed" },
+  { course: "Fluid Mechanics (ENG)", credit: 6, score: 79, status: "completed" },
+  { course: "Introduction to Engineering Materials (ENG)", credit: 6, score: 91, status: "completed" },
+  { course: "Introduction to Solid Mechanics (Including Lab) (ENG)", credit: 8, score: 92, status: "completed" },
+  { course: "Principles of Engineering Economy (ENG)", credit: 6, score: 91, status: "completed" },
+
+  // --- Spring 2024-2025 ---
+  { course: "Applied Hydraulics (Including Lab) (ENG)", credit: 8, score: 93, status: "completed" },
+  { course: "Economic Thinking (ENG)", credit: 4, score: 71, status: "completed" },
+  { course: "Environmental Engineering (ENG)", credit: 6, score: 100, status: "completed" },
+  { course: "Introduction to Transportation Engineering (ENG)", credit: 6, score: 98, status: "completed" },
+  { course: "Structural Analysis I (ENG)", credit: 6, score: 95, status: "completed" },
+
+  // --- Fall 2025-2026 ---
+  { course: "Entrepreneurship (ENG)", credit: 6, score: 61, status: "completed" },
+  { course: "Geotechnical Engineering (Including lab) (ENG)", credit: 8, score: 97, status: "completed" },
+  { course: "Reinforced Concrete Design (ENG)", credit: 6, score: 96, status: "completed" },
+  { course: "Soil Mechanics and Foundations (ENG)", credit: 6, score: 100, status: "completed" },
+  { course: "Structural Analysis II (ENG)", credit: 6, score: 60, status: "completed" },
+
+  // --- Spring 2025-2026 (current semester, in progress) ---
+  { course: "Civil Engineering and Society (ENG)", credit: 2, score: 0, status: "progress" },
+  { course: "Design of Steel Structures (ENG)", credit: 6, score: 0, status: "progress" },
+  { course: "Highway Engineering (ENG)", credit: 6, score: 0, status: "progress" },
+  { course: "Introduction to Artificial Intelligence (ENG)", credit: 6, score: 70, status: "progress" },
+  { course: "Project Management for Engineers (ENG)", credit: 4, score: 0, status: "progress" },
+  { course: "Senior Design Project Conception (ENG)", credit: 6, score: 0, status: "progress" },
+  { course: "Water Treatment Engineering (Incl. Wastewater) (ENG)", credit: 6, score: 0, status: "progress" },
+
+  // --- 5 additional courses (from the program catalog, not on the transcript) ---
+  { course: "Applied Hydrology (ENG)", credit: 6, score: 100, status: "completed" },
+  { course: "Construction Planning and Scheduling (ENG)", credit: 6, score: 100, status: "completed" },
+  { course: "Foundations of Management (ENG)", credit: 6, score: 100, status: "completed" },
+  { course: "Hydraulic Structures (ENG)", credit: 6, score: 100, status: "completed" },
+  { course: "Systems, Sustainability, and Climate change - Introduction (ENG)", credit: 6, score: 100, status: "completed" },
+];
+
+/* ============================================================ */
+
+document.getElementById("programName").textContent = PROGRAM_NAME;
+
+function scoreToGrade(score){
+  if(score >= 96) return "A+";
+  if(score >= 91) return "A";
+  if(score >= 81) return "B";
+  if(score >= 71) return "C";
+  if(score >= 61) return "D";
+  if(score >= 51) return "E";
+  return "F";
+}
+
+// Official ISU GP conversion (see tooltip / rules 3-4)
+function scoreToGP(score){
+  if(score <= 50) return 0;
+  if(score <= 60) return 1.00;
+  if(score <= 95) return 1.00 + (score - 60) / 12;
+  return 4.00;
+}
+
+function renderTable(){
+  const body = document.getElementById("courseBody");
+  body.innerHTML = "";
+  courses.forEach((c, i) => {
+    const isAdded = i >= courses.length - 5;
+    const passed = c.status === "completed";
+    const gradeDisplay = c.status === "progress"
+      ? `${c.score} (in progress)`
+      : `${c.score} (${scoreToGrade(c.score)})`;
+    const tr = document.createElement("tr");
+    if(isAdded) tr.className = "added-row";
+    tr.innerHTML = `
+      <td>${c.course}</td>
+      <td>${c.credit}</td>
+      <td>${gradeDisplay}</td>
+      <td class="${passed ? 'yes' : 'no'}">${passed ? "Yes" : "No"}</td>
+    `;
+    body.appendChild(tr);
+  });
+}
+renderTable();
+
+function computeGPA(list){
+  let sumWeighted = 0, sumCredits = 0;
+  list.forEach(c => {
+    if(c.status === "progress") return; // no final grade yet, excluded
+    sumWeighted += scoreToGP(c.score) * c.credit;
+    sumCredits  += c.credit;
+  });
+  if(sumCredits === 0) return null;
+  return Math.round((sumWeighted / sumCredits) * 10) / 10; // round to 1 decimal per official rule 7
+}
+
+document.getElementById("calcBtn").addEventListener("click", () => {
+  const gpa = computeGPA(courses);
+  const el = document.getElementById("calcResult");
+  el.textContent = gpa === null ? "No graded courses to calculate GPA." : `Your GPA: ${gpa.toFixed(1)}`;
+  el.classList.add("show");
+});
+
+document.getElementById("calcAiBtn").addEventListener("click", () => {
+  const adjusted = courses.map(c => {
+    if(c.course === INTRO_AI_COURSE_NAME){
+      const finalScore = Math.min(100, c.score + 30); // accumulated points + 30 final exam points
+      return { ...c, score: finalScore, status: "completed" };
+    }
+    return c;
+  });
+  const gpa = computeGPA(adjusted);
+  const introCourse = courses.find(c => c.course === INTRO_AI_COURSE_NAME);
+  const el = document.getElementById("calcAiResult");
+  if(!introCourse){
+    el.textContent = `Course "${INTRO_AI_COURSE_NAME}" not found in the course list.`;
+  } else {
+    const finalScore = Math.min(100, introCourse.score + 30);
+    el.textContent = `Assuming "${INTRO_AI_COURSE_NAME}" final score = ${introCourse.score} (accumulated) + 30 (final exam) = ${finalScore} → Your GPA: ${gpa.toFixed(1)}`;
+  }
+  el.classList.add("show");
+});
+
+// Tooltip: click to toggle (works for touch too), hover handled by CSS
+const infoWrap = document.getElementById("infoWrap");
+document.getElementById("infoIcon").addEventListener("click", (e) => {
+  e.stopPropagation();
+  infoWrap.classList.toggle("open");
+});
+document.addEventListener("click", () => infoWrap.classList.remove("open"));
+document.getElementById("tooltip").addEventListener("click", (e) => e.stopPropagation());
+</script>
+</body>
+</html>
