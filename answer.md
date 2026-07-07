@@ -19,6 +19,8 @@ Tool used: ChatGPT (image editing).
 
 See [`manual.md`](manual.md) for the full step-by-step user manual (sign-up + Coyote editing process), including screenshots.
 
+![](task2_chatgpt_process)
+
 ---
 
 ## Task 3. Finding the graph (5 points)
